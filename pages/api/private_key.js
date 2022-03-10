@@ -1,0 +1,1 @@
+export const privKey = "0x1234567890";

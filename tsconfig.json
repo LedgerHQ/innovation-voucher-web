@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "pages/api/private_key.js", "pages/api/private_key.dat"  ],
   "exclude": [
     "node_modules"
   ]
