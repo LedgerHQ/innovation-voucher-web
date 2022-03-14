@@ -2,9 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+```
 npm install
-
 source .env.development
+```
 
 Run the development server:
 
