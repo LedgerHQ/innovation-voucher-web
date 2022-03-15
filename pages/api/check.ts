@@ -7,17 +7,29 @@ import { SignatureLike } from "@ethersproject/bytes"
 
 const ethersWallet = new ethers.Wallet(process.env.LEDGER_EOA_PRIV_KEY);
 
+const domain:TypedDataDomain = {
+  name: "Ledger Voucher",
+  version: "1",
+  chainId: 1,
+  verifyingContract: process.env.NEXT_PUBLIC_VOUCHER_CONTRACT,
+};
+
+const types:Record<string, Array<TypedDataField>> = {
+  RedeemData: [
+    { name: "owner", type: "address" },
+    { name: "id", type: "uint256" },
+  ],
+};
+
 export default (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === 'POST') {
 
-    const domain = req.body.domain as TypedDataDomain;
-    const types = req.body.types as Record<string, Array<TypedDataField>>;
     const value = req.body.value as Record<string, any>; 
     const signature = req.body.signature as SignatureLike;
 
     const signer = ethers.utils.verifyTypedData(domain, types, value, signature);
-    if (value.from === signer) {
+    if (value.owner === signer) {
       console.log("Signature OK");
       res.status(200).json({signature_check: "OK"});
     }
@@ -25,8 +37,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       console.log("Signature KO");
       res.status(200).json({signature_check: "KO"});
     }
-
   } else {
-    res.status(200).json({ name: "John Doe" });
+    res.status(200).json({ name: "John Doe is buying bitcoin" });
   }  
 };
