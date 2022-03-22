@@ -1,39 +1,26 @@
-import { ethers } from "ethers";
 import { useState } from "react";
+import { ethers } from "ethers";
+import useAccount from "../src/utils/useAccount";
+import Connector from "../src/components/Connector";
+import { domain, types } from "../src/utils/EIP712";
 
+// TODO: remove me to use signed message function from wagmi
 const ethersWallet = new ethers.Wallet(process.env.NEXT_PUBLIC_USER_PRIV_KEY);
-
-const domain = {
-  name: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_NAME,
-  version: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VERSION,
-  chainId: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_CHAINID,
-  verifyingContract: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
-};
-
-const types = {
-  burn: [
-    { name: "owner", type: "address" },
-    { name: "tokenId", type: "uint256" },
-  ],
-};
 
 function Test() {
   const [voucherID, setVoucherID] = useState("");
+  const [{ data: account }] = useAccount();
 
   async function handleSubmit(event) {
     event.preventDefault();
 
     // The data to sign
-    const value = {
-      owner: ethersWallet.address,
-      tokenId: voucherID,
-    };
+    const value = { owner: account.address, tokenId: voucherID };
+
+    // TODO: use signed message function from wagmi
     const signature = await ethersWallet._signTypedData(domain, types, value);
-    const data = {
-      value,
-      signature,
-    };
-    const response = await fetch("api/check", {
+    const data = { value, signature };
+    fetch("api/check", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,9 +33,10 @@ function Test() {
 
   return (
     <div className="Example">
+      <Connector />
       <h1>Redeem Voucher</h1>
       <div>
-        <p>Account is {ethersWallet.address}</p>
+        <p>Account is {account?.address}</p>
         <form onSubmit={handleSubmit}>
           <label>
             Enter voucher ID to redeem:
