@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import Head from "next/head";
 import { useState } from "react";
 import useAccount from "../src/utils/useAccount";
 import { domain, types } from "../src/utils/EIP712";
@@ -42,6 +43,13 @@ function Test() {
 
   return (
     <>
+      <Head>
+        <title>Ledger Voucher</title>
+        <meta
+          name="description"
+          content="Got a ticket from Ledger? Redeem it!"
+        ></meta>
+      </Head>
       <header>
         <h1>Redeem Voucher</h1>
         <Connector />
