@@ -1,30 +1,36 @@
-import { useMemo } from "react";
 import { useConnect } from "wagmi";
 import useAccount from "../utils/useAccount";
 
 const Connector = () => {
-  const [{ data, error }, connect] = useConnect();
+  const [{ data }, connect] = useConnect();
   const [, disconnect, isConnected] = useAccount();
-  const connector = useMemo(
-    () => (data?.connectors.length ? data.connectors[0] : null),
-    [data.connectors]
-  );
 
-  const handleClick = () => (isConnected ? disconnect() : connect(connector));
+  // Render null if the connectors are loading
+  if (!data?.connectors.length) return null;
 
-  if (!connector) return null;
+  // Render the button to disconnected if needed
+  if (isConnected)
+    return (
+      <section>
+        <button
+          onClick={disconnect}
+        >{`Disconnect ${data?.connector?.name}`}</button>
+      </section>
+    );
 
+  // Render all the connector buttons
   return (
-    <div>
-      <button
-        disabled={!connector.ready}
-        key={connector.id}
-        onClick={handleClick}
-      >
-        {isConnected ? "Disconnect" : "Connect wallet"}
-      </button>
-      {error && <div>{error?.message ?? "Failed to connect"}</div>}
-    </div>
+    <section>
+      {data.connectors.map((connector) => (
+        <button
+          disabled={!connector.ready}
+          key={connector.id}
+          onClick={() => connect(connector)}
+        >
+          {`Connect using ${connector.name}`}
+        </button>
+      ))}
+    </section>
   );
 };
 

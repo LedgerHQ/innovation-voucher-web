@@ -1,9 +1,13 @@
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { ethers } from "ethers";
 import useAccount from "../src/utils/useAccount";
-import Connector from "../src/components/Connector";
 import { domain, types } from "../src/utils/EIP712";
 
+// @dev: Import the component client-side only (no SSR because metamask requires window)
+const Connector = dynamic(() => import("../src/components/Connector"), {
+  ssr: false,
+});
 // TODO: remove me to use signed message function from wagmi
 const ethersWallet = new ethers.Wallet(process.env.NEXT_PUBLIC_USER_PRIV_KEY);
 
