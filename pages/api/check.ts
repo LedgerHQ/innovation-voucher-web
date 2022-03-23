@@ -8,10 +8,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
 }
 type Response = { ok: true; error: null } | { ok: false; error: string };
 
-export default (
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse<Response>
-) => {
+const route = (req: ExtendedNextApiRequest, res: NextApiResponse<Response>) => {
   if (req.method !== "POST") return res.status(404);
   const { value, signature } = req.body;
   // check if value and signature are provided
@@ -35,3 +32,5 @@ export default (
     res.status(500).json({ ok: false, error: "failed to verify data" });
   }
 };
+
+export default route;
