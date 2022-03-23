@@ -10,7 +10,8 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier": "prettier --check \"**/*.(ts*|js*)\"",
     "prettier:fix": "prettier --write \"**/*.(ts|tsx|js*)\"",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "tsc --noEmit",
+    "lefthook": "npx @arkweid/lefthook run pre-push"
   },
   "dependencies": {
     "ethers": "5.6.0",

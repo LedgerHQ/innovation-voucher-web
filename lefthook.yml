@@ -1,0 +1,10 @@
+# Automatically run quality checks before pushing code
+pre-push:
+  parallel: true
+  commands:
+    linter:
+      run: npm run lint
+    prettier:
+      run: npm run lint
+    tscheck:
+      run: npm run ts:check
