@@ -11,9 +11,9 @@ const domain = {
 };
 
 const types = {
-  burnWithSignature: [
+  burn: [
     { name: "owner", type: "address" },
-    { name: "id", type: "uint256" },
+    { name: "tokenId", type: "uint256" },
   ],
 };
 
@@ -26,7 +26,7 @@ function Test() {
     // The data to sign
     const value = {
       owner: ethersWallet.address,
-      id: voucherID,
+      tokenId: voucherID,
     };
     const signature = await ethersWallet._signTypedData(domain, types, value);
     const data = {

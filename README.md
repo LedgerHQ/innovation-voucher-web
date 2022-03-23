@@ -4,8 +4,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ```
 npm install
-source .env.development
+cp .env.example .env.local
 ```
+
+Edit .env.local file
 
 Run the development server:
 

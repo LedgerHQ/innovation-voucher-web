@@ -15,9 +15,9 @@ const domain:TypedDataDomain = {
 };
 
 const types:Record<string, Array<TypedDataField>> = {
-  burnWithSignature: [
+  burn: [
     { name: "owner", type: "address" },
-    { name: "id", type: "uint256" },
+    { name: "tokenId", type: "uint256" },
   ],
 };
 
@@ -29,7 +29,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     const signature = req.body.signature as SignatureLike;
     const signer = ethers.utils.verifyTypedData(domain, types, value, signature);
 
-    const status = value.owner === signer ? "OK" : "KO";
+    const status = value.owner.toLowerCase() === signer.toLowerCase() ? "OK" : "KO";
 
     console.log(`Signature ${status}`);
     res.status(200).json({signature_check: status});
