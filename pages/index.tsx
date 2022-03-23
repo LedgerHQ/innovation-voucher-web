@@ -60,11 +60,7 @@ function Test() {
           <form onSubmit={handleSubmit}>
             <label>
               Enter voucher ID to redeem:
-              <input
-                type="number"
-                value={tokenId}
-                onChange={(e) => setTokenId(e.target.value)}
-              />
+              <input type="number" value={tokenId} onChange={(e) => setTokenId(e.target.value)} />
             </label>
             <input type="submit" disabled={!tokenId} />
           </form>

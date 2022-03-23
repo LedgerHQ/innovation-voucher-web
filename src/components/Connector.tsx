@@ -12,9 +12,7 @@ const Connector = () => {
   if (isConnected)
     return (
       <section>
-        <button
-          onClick={disconnect}
-        >{`Disconnect ${data?.connector?.name}`}</button>
+        <button onClick={disconnect}>{`Disconnect ${data?.connector?.name}`}</button>
       </section>
     );
 
@@ -22,11 +20,7 @@ const Connector = () => {
   return (
     <section>
       {data.connectors.map((connector) => (
-        <button
-          disabled={!connector.ready}
-          key={connector.id}
-          onClick={() => connect(connector)}
-        >
+        <button disabled={!connector.ready} key={connector.id} onClick={() => connect(connector)}>
           {`Connect using ${connector.name}`}
         </button>
       ))}

@@ -15,17 +15,10 @@ const route = (req: ExtendedNextApiRequest, res: NextApiResponse<Response>) => {
   if (!(value && signature)) return res.status(422);
 
   try {
-    const signer = ethers.utils.verifyTypedData(
-      domain,
-      types,
-      value,
-      signature
-    );
+    const signer = ethers.utils.verifyTypedData(domain, types, value, signature);
 
     if (value.owner.toLowerCase() !== signer.toLowerCase())
-      return res
-        .status(401)
-        .send({ ok: false, error: "owner doesn't match the signer" });
+      return res.status(401).send({ ok: false, error: "owner doesn't match the signer" });
 
     res.status(200).json({ ok: true, error: null });
   } catch (e) {
