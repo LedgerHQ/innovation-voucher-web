@@ -1,36 +1,37 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
-import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
-import { SignatureLike } from "@ethersproject/bytes"
+import { SignatureLike } from "@ethersproject/bytes";
+import { domain, types } from "../../src/utils/EIP712";
 
-const ethersWallet = new ethers.Wallet(process.env.LEDGER_EOA_PRIV_KEY);
+interface ExtendedNextApiRequest extends NextApiRequest {
+  body: { value: Record<string, any>; signature: SignatureLike };
+}
+type Response = { ok: true; error: null } | { ok: false; error: string };
 
-const domain:TypedDataDomain = {
-  name: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_NAME,
-  version: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VERSION,
-  chainId: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_CHAINID,
-  verifyingContract: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
-};
+export default (
+  req: ExtendedNextApiRequest,
+  res: NextApiResponse<Response>
+) => {
+  if (req.method !== "POST") return res.status(404);
+  const { value, signature } = req.body;
+  // check if value and signature are provided
+  if (!(value && signature)) return res.status(422);
 
-const types:Record<string, Array<TypedDataField>> = {
-  burn: [
-    { name: "owner", type: "address" },
-    { name: "tokenId", type: "uint256" },
-  ],
-};
+  try {
+    const signer = ethers.utils.verifyTypedData(
+      domain,
+      types,
+      value,
+      signature
+    );
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
+    if (value.owner.toLowerCase() !== signer.toLowerCase())
+      return res
+        .status(401)
+        .send({ ok: false, error: "owner doesn't match the signer" });
 
-  if (req.method !== 'POST') res.status(200).json({ name: "John Doe is buying bitcoin" });
-
-    const value = req.body.value as Record<string, any>; 
-    const signature = req.body.signature as SignatureLike;
-    const signer = ethers.utils.verifyTypedData(domain, types, value, signature);
-
-    const status = value.owner.toLowerCase() === signer.toLowerCase() ? "OK" : "KO";
-
-    console.log(`Signature ${status}`);
-    res.status(200).json({signature_check: status});
+    res.status(200).json({ ok: true, error: null });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "failed to verify data" });
+  }
 };
