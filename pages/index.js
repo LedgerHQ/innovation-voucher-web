@@ -4,14 +4,14 @@ import { useState } from "react";
 const ethersWallet = new ethers.Wallet(process.env.NEXT_PUBLIC_USER_PRIV_KEY);
 
 const domain = {
-  name: "Ledger Voucher",
-  version: "1",
-  chainId: 1,
-  verifyingContract: process.env.NEXT_PUBLIC_VOUCHER_CONTRACT,
+  name: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_NAME,
+  version: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VERSION,
+  chainId: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_CHAINID,
+  verifyingContract: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
 };
 
 const types = {
-  RedeemData: [
+  burnWithSignature: [
     { name: "owner", type: "address" },
     { name: "id", type: "uint256" },
   ],
@@ -22,6 +22,7 @@ function Test() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+
     // The data to sign
     const value = {
       owner: ethersWallet.address,
@@ -30,18 +31,17 @@ function Test() {
     const signature = await ethersWallet._signTypedData(domain, types, value);
     const data = {
       value,
-      signature: signature,
+      signature,
     };
-    fetch("api/check", {
+    const response = await fetch("api/check", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then(async (response) => {
-      const data = await response.text();
-      console.log(data);
     });
+    const res = await response.text();
+    console.log(res);
   }
 
   return (

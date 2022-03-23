@@ -15,4 +15,4 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000/test) to EIP-712 sign a voucher redeem operation
+Open [http://localhost:3000](http://localhost:3000) to EIP-712 sign a voucher redeem operation

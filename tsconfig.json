@@ -22,8 +22,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "pages/api/private_key.js", "pages/api/private_key.dat"  ],
+    "**/*.tsx"],
   "exclude": [
     "node_modules"
   ]

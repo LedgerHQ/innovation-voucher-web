@@ -8,14 +8,14 @@ import { SignatureLike } from "@ethersproject/bytes"
 const ethersWallet = new ethers.Wallet(process.env.LEDGER_EOA_PRIV_KEY);
 
 const domain:TypedDataDomain = {
-  name: "Ledger Voucher",
-  version: "1",
-  chainId: 1,
-  verifyingContract: process.env.NEXT_PUBLIC_VOUCHER_CONTRACT,
+  name: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_NAME,
+  version: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VERSION,
+  chainId: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_CHAINID,
+  verifyingContract: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
 };
 
 const types:Record<string, Array<TypedDataField>> = {
-  RedeemData: [
+  burnWithSignature: [
     { name: "owner", type: "address" },
     { name: "id", type: "uint256" },
   ],
@@ -23,21 +23,14 @@ const types:Record<string, Array<TypedDataField>> = {
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
 
-  if (req.method === 'POST') {
+  if (req.method !== 'POST') res.status(200).json({ name: "John Doe is buying bitcoin" });
 
     const value = req.body.value as Record<string, any>; 
     const signature = req.body.signature as SignatureLike;
-
     const signer = ethers.utils.verifyTypedData(domain, types, value, signature);
-    if (value.owner === signer) {
-      console.log("Signature OK");
-      res.status(200).json({signature_check: "OK"});
-    }
-    else {
-      console.log("Signature KO");
-      res.status(200).json({signature_check: "KO"});
-    }
-  } else {
-    res.status(200).json({ name: "John Doe is buying bitcoin" });
-  }  
+
+    const status = value.owner === signer ? "OK" : "KO";
+
+    console.log(`Signature ${status}`);
+    res.status(200).json({signature_check: status});
 };
