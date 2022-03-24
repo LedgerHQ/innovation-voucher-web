@@ -1,9 +1,10 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Nft } from "@alch/alchemy-web3";
+import { useSignTypedData } from "wagmi";
 import useAccount from "../src/utils/useAccount";
 import { domain, types } from "../src/utils/EIP712";
-import { useSignTypedData } from "wagmi";
 
 // @dev: Import the component client-side only (no SSR because metamask requires window)
 const Connector = dynamic(() => import("../src/components/Connector"), {
@@ -12,8 +13,27 @@ const Connector = dynamic(() => import("../src/components/Connector"), {
 
 function Test() {
   const [tokenId, setTokenId] = useState("");
+  const [nfts, setNFTs] = useState<Array<Nft>>([]);
   const [{ data: account }] = useAccount();
   const [, signTypedData] = useSignTypedData();
+
+  const fetchNFTs = async (address: string) => {
+    try {
+      const response = await fetch(`api/nfts/${address}`);
+      const nfts = await response.json();
+      setNFTs(nfts.data);
+    } catch (e) {
+      // TODO: Display the error in the UI
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!account?.address) return;
+
+    // dev: Run the function once per address change
+    fetchNFTs(account?.address);
+  }, [account?.address]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -62,6 +82,15 @@ function Test() {
             <input type="submit" disabled={!tokenId} />
           </form>
         </section>
+        {!!nfts?.length && (
+          <section>
+            <ul>
+              {nfts.map((nft) => (
+                <li key={nft.id.tokenId}>id: {nft.id.tokenId}</li>
+              ))}
+            </ul>
+          </section>
+        )}
       </main>
     </>
   );
