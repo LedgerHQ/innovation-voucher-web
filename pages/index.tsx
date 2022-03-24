@@ -45,10 +45,7 @@ function Test() {
     <>
       <Head>
         <title>Ledger Voucher</title>
-        <meta
-          name="description"
-          content="Got a ticket from Ledger? Redeem it!"
-        ></meta>
+        <meta name="description" content="Got a ticket from Ledger? Redeem it!"></meta>
       </Head>
       <header>
         <h1>Redeem Voucher</h1>
