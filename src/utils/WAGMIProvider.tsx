@@ -2,7 +2,10 @@ import { Provider, chain } from "wagmi";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
-const chains = [chain.polygonMainnet];
+// @dev: Strictly allow Polygon on prod, and Kovan on dev mode.
+//       If we wanna support more networks, we should write an
+//       utils function to manage them in a better way.
+const chains = [chain.polygonMainnet, chain.kovan];
 
 const connectors = [
   new WalletConnectConnector({
