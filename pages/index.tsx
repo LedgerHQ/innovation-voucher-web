@@ -12,7 +12,7 @@ const Connector = dynamic(() => import("../src/components/Connector"), {
 });
 
 function Test() {
-  const [tokenId, setTokenId] = useState("");
+  const [tokenId, setTokenId] = useState(null);
   const [nfts, setNFTs] = useState<Array<Nft>>([]);
   const [{ data: account }] = useAccount();
   const [, signTypedData] = useSignTypedData();
@@ -45,7 +45,7 @@ function Test() {
 
       if (signature.error) throw signature.error;
 
-      const response = await fetch("api/check", {
+      const response = await fetch("api/burn", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ function Test() {
 
       const data = await response.json();
       // TODO: Display status in the UI
-      console.log(data.ok);
+      console.log(data);
     } catch (e) {
       throw e;
     }
@@ -72,24 +72,20 @@ function Test() {
         <Connector />
       </header>
       <main>
-        <section>
-          <p>Account is {account?.address}</p>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Enter voucher ID to redeem:
-              <input type="number" value={tokenId} onChange={(e) => setTokenId(e.target.value)} />
-            </label>
-            <input type="submit" disabled={!tokenId} />
-          </form>
-        </section>
+        <p>Account: {account?.address}</p>
+        <p>Token chosen: {tokenId}</p>
+        <button onClick={handleSubmit} disabled={!tokenId}>
+          Burn and redeem
+        </button>
+
         {!!nfts?.length && (
-          <section>
-            <ul>
-              {nfts.map((nft) => (
-                <li key={nft.id.tokenId}>id: {nft.id.tokenId}</li>
-              ))}
-            </ul>
-          </section>
+          <ul>
+            {nfts.map((nft) => (
+              <li onClick={() => setTokenId(nft.id.tokenId)} key={nft.id.tokenId}>
+                id: {nft.id.tokenId}
+              </li>
+            ))}
+          </ul>
         )}
       </main>
     </>
