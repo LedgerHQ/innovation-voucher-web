@@ -24,6 +24,7 @@ Open [http://localhost:3000](http://localhost:3000) to EIP-712 sign a voucher re
 ## Git hooks
 
 We use [lefthook](https://github.com/evilmartians/lefthook) to manage our git hooks. For the moment, the following hooks are configured:
+
 - Run `npm run lint` before pushing to remote
 - Run `npm run prettier` before pushing to remote
 - Run `npm run ts:check` before pushing to remote
@@ -35,3 +36,13 @@ You only need to do this step once. Run `npx @arkweid/lefthook install` in the r
 ## How to run manually
 
 You can manually run the installed git hooks by running `npx @arkweid/lefthook run pre-push` or by running the alias defined in the `package.json` file (`npm run lefthook`).
+
+## Docker
+
+### Build
+
+    docker build . -f ./.Dockerfile -t web-voucher:0.2
+
+### Run locally
+
+    docker run -p 3000:3000 web-voucher:0.2
