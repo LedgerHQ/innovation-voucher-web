@@ -41,7 +41,7 @@ You can manually run the installed git hooks by running `npx @arkweid/lefthook r
 
 ### Build
 
-    docker build . -f ./.Dockerfile -t web-voucher:0.2
+    docker build . -f ./Dockerfile -t web-voucher:0.2
 
 ### Run locally
 
