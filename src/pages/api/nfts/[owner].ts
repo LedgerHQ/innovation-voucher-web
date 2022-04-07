@@ -1,4 +1,4 @@
-import api from "../../../src/utils/api";
+import api from "../../../utils/api";
 
 const getAllNFTs = async ({ query: { owner }, method }, res) => {
   if (method !== "GET") return res.status(404);

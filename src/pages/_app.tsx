@@ -1,7 +1,7 @@
 import type { AppProps } from "next/app";
-import WAGMIProvider from "../src/utils/WAGMIProvider";
+import WAGMIProvider from "../utils/WAGMIProvider";
 import { StyleProvider } from "@ledgerhq/react-ui";
-import "../public/style.css";
+import "../../public/style.css";
 
 /*
  ** Next.js uses the App component to initialize pages. You can override it and control the page initialization.

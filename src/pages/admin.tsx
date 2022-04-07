@@ -3,11 +3,11 @@ import { useState } from "react";
 import Head from "next/head";
 import { useContractWrite } from "wagmi";
 import { utils } from "ethers";
-import useAccount from "../src/utils/useAccount";
-import contract from "../src/utils/contract.json";
+import useAccount from "../utils/useAccount";
+import contract from "../utils/contract.json";
 
 // @dev: Import the component client-side only (no SSR because metamask requires window)
-const Connector = dynamic(() => import("../src/components/Connector"), {
+const Connector = dynamic(() => import("../components/Connector"), {
   ssr: false,
 });
 

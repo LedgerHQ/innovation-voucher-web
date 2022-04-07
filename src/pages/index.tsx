@@ -3,11 +3,11 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import { Nft } from "@alch/alchemy-web3";
 import { useSignTypedData } from "wagmi";
-import useAccount from "../src/utils/useAccount";
-import { domain, types } from "../src/utils/EIP712";
+import useAccount from "../utils/useAccount";
+import { domain, types } from "../utils/EIP712";
 
 // @dev: Import the component client-side only (no SSR because metamask requires window)
-const Connector = dynamic(() => import("../src/components/Connector"), {
+const Connector = dynamic(() => import("../components/Connector"), {
   ssr: false,
 });
 

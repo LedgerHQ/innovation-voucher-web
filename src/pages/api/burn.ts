@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ethers, ContractTransaction } from "ethers";
 import { SignatureLike } from "@ethersproject/bytes";
-import { domain, types } from "../../src/utils/EIP712";
-import api from "../../src/utils/api";
+import { domain, types } from "../../utils/EIP712";
+import api from "../../utils/api";
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: { value: { owner: string; tokenId: string }; signature: SignatureLike };
