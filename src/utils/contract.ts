@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import contractData from "./contract.json";
+import contractData from "./data/contract.json";
 
 // @dev: The api key is the last element of the endpoint
 const alchemyApiKey = process.env.ALCHEMY_ENDPOINT.split("/").pop();
