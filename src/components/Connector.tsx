@@ -4,6 +4,7 @@ import { Flex, Button, Text } from "@ledgerhq/react-ui";
 import Image from "next/image";
 import type { Connector as WAGMIConnect } from "wagmi-core";
 import useAccount from "../utils/useAccount";
+import getHashPreview from "../utils/getHashPreview";
 
 type ConnectorButtonProps = { connector?: WAGMIConnect; onClick: () => void };
 const ConnectorButton = ({ connector, onClick }: ConnectorButtonProps) => {
@@ -28,17 +29,13 @@ const ConnectorButton = ({ connector, onClick }: ConnectorButtonProps) => {
 };
 
 const DisconnectButton = ({ address, onClick }: { address: string; onClick: () => void }) => {
-  // Get the first 4 characters of the address and the last 4 characters
-  const [start, end] = useMemo(
-    () => [address.substring(0, 4), address.substring(address.length - 4, address.length)],
-    [address]
-  );
+  const addressPreview = useMemo(() => getHashPreview(address), [address]);
 
   return (
     <Button variant="shade" outline={false} onClick={onClick} fontSize={3}>
       Disconnect{" "}
       <Text variant="small" fontWeight="light">
-        ({`${start}...${end}`})
+        ({addressPreview})
       </Text>
     </Button>
   );

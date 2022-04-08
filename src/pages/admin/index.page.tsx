@@ -1,12 +1,15 @@
 import { useState } from "react";
 import Head from "next/head";
 import { useContractWrite } from "wagmi";
+import { Text, Flex } from "@ledgerhq/react-ui";
 import useAccount from "../../utils/useAccount";
 import contract from "../../utils/data/contract.json";
-import { Text, Flex, Button } from "@ledgerhq/react-ui";
-import AdminRecipientSection from "./sections/AdminRecipientSection";
-import AdminTokenSection from "./sections/AdminTokenSection";
-import AdminAmountSection from "./sections/AdminAmountSection";
+import {
+  AdminRecipientSection,
+  AdminTokenSection,
+  AdminAmountSection,
+  AdminConfirmationSection,
+} from "./sections";
 
 const CONTRACT_DATA = {
   addressOrName: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
@@ -18,13 +21,9 @@ function Admin() {
   const [to, setTo] = useState([]);
   const [amount, setAmount] = useState(null);
   const [erc20Addr, setErc20Addr] = useState(null);
-  // TODO: Display tx error
-  // TODO: Display tx link
-  const [, write] = useContractWrite(CONTRACT_DATA, "batchMint");
+  const [{ data, error, loading }, write] = useContractWrite(CONTRACT_DATA, "batchMint");
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-
+  async function handleSubmit() {
     try {
       await write({ args: [to, amount, erc20Addr] });
     } catch (e) {
@@ -37,7 +36,7 @@ function Admin() {
     setTo((previousTo) => [...new Set([...previousTo, recipient])]);
 
   // Remove the selected address from the list
-  const handleRemove = (recipient) =>
+  const handleToRemove = (recipient) =>
     setTo((previousTo) => previousTo.filter((addr) => addr !== recipient));
 
   return (
@@ -50,24 +49,21 @@ function Admin() {
         <Flex flexDirection="column" as="header" rowGap={2}>
           <Text variant="h1">Ledger | Mint Vouchers</Text>
           <Text variant="subtitle">
-            Using this interface, you can mint vouchers for Ledger employees.
+            By using this interface, you can mint vouchers for Ledger employees.
           </Text>
         </Flex>
 
-        <Flex flexDirection="column" as="main" rowGap={10} style={{ maxWidth: "40rem" }}>
-          <AdminRecipientSection recipients={to} onSave={handleToSave} onRemove={handleRemove} />
+        <Flex flexDirection="column" as="main" rowGap={14} style={{ maxWidth: "40rem" }}>
+          <AdminRecipientSection recipients={to} onSave={handleToSave} onRemove={handleToRemove} />
           <AdminTokenSection value={erc20Addr} disabled={!to.length} onSave={setErc20Addr} />
           <AdminAmountSection value={amount} disabled={!erc20Addr} onSave={setAmount} />
-
-          <Flex justifyContent="flex-end" as="section">
-            <Button
-              variant="main"
-              onClick={handleSubmit}
-              disabled={!(to.length && amount && erc20Addr && isConnected)}
-            >
-              Mint
-            </Button>
-          </Flex>
+          <AdminConfirmationSection
+            handleSubmit={handleSubmit}
+            disabled={!(to.length && amount && erc20Addr && isConnected)}
+            loading={loading}
+            error={error}
+            hash={data?.hash}
+          />
         </Flex>
       </Flex>
     </>
