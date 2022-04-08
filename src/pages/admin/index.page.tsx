@@ -6,6 +6,7 @@ import contract from "../../utils/data/contract.json";
 import { Text, Flex, Button } from "@ledgerhq/react-ui";
 import AdminRecipientSection from "./sections/AdminRecipientSection";
 import AdminTokenSection from "./sections/AdminTokenSection";
+import AdminAmountSection from "./sections/AdminAmountSection";
 
 const CONTRACT_DATA = {
   addressOrName: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
@@ -25,10 +26,6 @@ function Admin() {
     event.preventDefault();
 
     try {
-      // TODO: move this at the input verification step
-      // TODO: manage 18 decimals amount correctly
-      if (amount <= 0) throw new Error("Invalid amount");
-
       await write({ args: [to, amount, erc20Addr] });
     } catch (e) {
       throw e;
@@ -60,25 +57,13 @@ function Admin() {
         <Flex flexDirection="column" as="main" rowGap={10} style={{ maxWidth: "40rem" }}>
           <AdminRecipientSection recipients={to} onSave={handleToSave} onRemove={handleRemove} />
           <AdminTokenSection value={erc20Addr} disabled={!to.length} onSave={setErc20Addr} />
-
-          <Flex flexDirection="column" as="section" style={{ opacity: erc20Addr ? 1 : 0.3 }}>
-            <Text variant="h4">
-              <span style={{ opacity: 0.6 }}>C/</span> Select the amount
-            </Text>
-            <input
-              type="number"
-              placeholder="amount of tokens"
-              value={amount}
-              onChange={(e) => setAmount(parseInt(e.target.value))}
-              disabled={!erc20Addr}
-            />
-          </Flex>
+          <AdminAmountSection value={amount} disabled={!erc20Addr} onSave={setAmount} />
 
           <Flex justifyContent="flex-end" as="section">
             <Button
               variant="main"
               onClick={handleSubmit}
-              disabled={(!to.length && !amount && !erc20Addr) || !isConnected}
+              disabled={!(to.length && amount && erc20Addr && isConnected)}
             >
               Mint
             </Button>

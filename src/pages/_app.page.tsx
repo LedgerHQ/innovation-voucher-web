@@ -10,7 +10,7 @@ import Header from "../components/Header";
 const CustomApp = ({ Component, pageProps }: AppProps) => (
   <StyleProvider selectedPalette="light" fontsPath="/fonts">
     <WAGMIProvider>
-      <Flex flexDirection="column" px={8} py={4}>
+      <Flex flexDirection="column" rowGap={4} px={8} py={4}>
         <Header />
         <Component {...pageProps} />
       </Flex>
