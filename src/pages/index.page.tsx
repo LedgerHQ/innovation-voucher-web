@@ -1,15 +1,9 @@
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { Nft } from "@alch/alchemy-web3";
 import { useSignTypedData } from "wagmi";
 import useAccount from "../utils/useAccount";
 import { domain, types } from "../utils/EIP712";
-
-// @dev: Import the component client-side only (no SSR because metamask requires window)
-const Connector = dynamic(() => import("../components/Connector"), {
-  ssr: false,
-});
 
 function Test() {
   const [tokenId, setTokenId] = useState(null);
@@ -69,7 +63,6 @@ function Test() {
       </Head>
       <header>
         <h1>Redeem Voucher</h1>
-        <Connector />
       </header>
       <main>
         <p>Account: {account?.address}</p>

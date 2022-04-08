@@ -1,15 +1,9 @@
-import dynamic from "next/dynamic";
 import { useState } from "react";
 import Head from "next/head";
 import { useContractWrite } from "wagmi";
 import { utils } from "ethers";
 import useAccount from "../../utils/useAccount";
 import contract from "../../utils/contract.json";
-
-// @dev: Import the component client-side only (no SSR because metamask requires window)
-const Connector = dynamic(() => import("../../components/Connector"), {
-  ssr: false,
-});
 
 const CONTRACT_DATA = {
   addressOrName: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
@@ -58,7 +52,6 @@ function Admin() {
       </Head>
       <header>
         <h1>Mint Voucher</h1>
-        <Connector />
       </header>
       <main>
         <input
