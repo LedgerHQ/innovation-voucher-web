@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
-import { useContractWrite } from "wagmi";
 import { Text, Flex } from "@ledgerhq/react-ui";
 import useAccount from "../../utils/useAccount";
-import contract from "../../utils/data/contract.json";
+import useVoucherMint from "../../utils/useVoucherMint";
 import {
   AdminRecipientSection,
   AdminTokenSection,
@@ -11,25 +10,30 @@ import {
   AdminConfirmationSection,
 } from "./sections";
 
-const CONTRACT_DATA = {
-  addressOrName: process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT,
-  contractInterface: contract.abi,
-};
-
 function Admin() {
   const [, , isConnected] = useAccount();
   const [to, setTo] = useState([]);
   const [amount, setAmount] = useState(null);
   const [erc20Addr, setErc20Addr] = useState(null);
-  const [{ data, error, loading }, write] = useContractWrite(CONTRACT_DATA, "batchMint");
+  const [{ loading, error, data }, mint] = useVoucherMint();
 
-  async function handleSubmit() {
+  useEffect(() => {
+    // if the transaction is propagated to the network, and the state isn't already empty, we clear it
+    if (data?.hash && to && amount && erc20Addr) {
+      setTo([]);
+      setAmount(null);
+      setErc20Addr(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  const handleSubmit = async () => {
     try {
-      await write({ args: [to, amount, erc20Addr] });
+      await mint(to, amount, erc20Addr);
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   // Ensure the new recipient isn't already in the list then add it
   const handleToSave = (recipient) =>
