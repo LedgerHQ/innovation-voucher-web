@@ -12,7 +12,7 @@ const Home = () => {
   const [tokenId, setTokenId] = useState<string>(null);
   const [txError, setTxError] = useState<Error>(null);
   const [burnedTokens, setBurnedTokens] = useState<BurnedList>([]);
-  const [{ data: account }] = useAccount();
+  const [{ data: account }, , isConnected] = useAccount();
   const [, signTypedData] = useSignTypedData();
   const [{ data, error, loading }] = useVoucherFetch(account?.address);
 
@@ -68,14 +68,19 @@ const Home = () => {
         </Flex>
 
         <Flex flexDirection="column" as="main" rowGap={6}>
-          <HomeVoucherViewerSection
-            loading={loading}
-            error={error}
-            nfts={data}
-            onClick={handleTokenPick}
-            currentToken={tokenId}
-            burnedlist={burnedTokens}
-          />
+          {isConnected ? (
+            <HomeVoucherViewerSection
+              loading={loading}
+              error={error}
+              nfts={data}
+              onClick={handleTokenPick}
+              currentToken={tokenId}
+              burnedlist={burnedTokens}
+            />
+          ) : (
+            <Text variant="paragraph">You must login to see your vouchers</Text>
+          )}
+
           {data.length ? (
             <Flex alignItems="flex-start" flexDirection="column" rowGap={4}>
               <Button variant="main" outline={false} disabled={!tokenId} onClick={handleSubmit}>
