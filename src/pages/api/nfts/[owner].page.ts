@@ -5,8 +5,8 @@ const getAllNFTs = async ({ query: { owner }, method }, res) => {
 
   try {
     const nfts = await api.getNFTs(owner);
-    // @dev: set a cache of 1 day
-    res.setHeader("Cache-Control", "s-maxage=86400");
+    // @dev: set a cache of 1 day in production
+    if (process.env.VERCEL_ENV === "production") res.setHeader("Cache-Control", "s-maxage=600");
     res.status(200).json({ data: nfts, error: null });
   } catch (e) {
     res.status(500).json({ data: null, error: e.message });
