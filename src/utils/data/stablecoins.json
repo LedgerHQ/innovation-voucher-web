@@ -25,5 +25,14 @@
       ["USDC", "0x7079f3762805CFf9C979a5bDC6f5648bCFEE76C8"],
       ["DAI", "0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD"]
     ]
+  },
+  {
+    "id": 4,
+    "name": "rinkeby",
+    "tokens": [
+      ["USDT", "0x01547Ef97f9140dbDF5ae50f06B77337B95cF4BB"],
+      ["USDC", "0xab5400b26149A3fF5918EFCdeB2C37903042E9ee"],
+      ["DAI", "0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D"]
+    ]
   }
 ]

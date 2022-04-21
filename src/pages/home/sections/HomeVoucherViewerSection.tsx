@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Image from "next/image";
 import { Nft } from "@alch/alchemy-web3";
 import { Text, Flex, InfiniteLoader } from "@ledgerhq/react-ui";
@@ -19,6 +20,10 @@ type VoucherCardType = { currentToken: string; voucher: Nft; onClick: (string) =
 const VoucherCard = ({ currentToken, voucher, onClick }: VoucherCardType) => {
   const tokenId = voucher.id.tokenId;
   const borderColor = currentToken === tokenId ? "hsla(0, 0%, 0%, 1)" : "transparent";
+  const placeholderImage = useMemo(
+    () => `https://picsum.photos/id/${tokenId}/300/400.webp`,
+    [tokenId]
+  );
 
   return (
     <Flex
@@ -34,7 +39,8 @@ const VoucherCard = ({ currentToken, voucher, onClick }: VoucherCardType) => {
       }}
     >
       <Image
-        src={`https://picsum.photos/id/${tokenId}/300/400.webp`}
+        /* @ts-ignore next-line */
+        src={voucher?.media[0]?.raw || placeholderImage}
         layout="fill"
         quality={100}
         alt=""
