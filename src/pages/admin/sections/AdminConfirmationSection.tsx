@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useNetwork } from "wagmi";
 import { Text, Flex, Button, InfiniteLoader, Link } from "@ledgerhq/react-ui";
 import getHashPreview from "../../../utils/getHashPreview";
@@ -10,6 +11,13 @@ type AdminConfirmationSectionType = {
   hash?: string; // Represent the transaction hash
 };
 
+const errorMapping = (error) => {
+  if (error.message.includes("Ownable: caller is not the owner")) {
+    return new Error("You don't have the permission to mint tokens");
+  }
+  return error;
+};
+
 const AdminConfirmationSection = ({
   handleSubmit,
   disabled,
@@ -18,6 +26,8 @@ const AdminConfirmationSection = ({
   hash,
 }: AdminConfirmationSectionType) => {
   const [{ data: currentNetwork }] = useNetwork();
+  const formatedError = useMemo(() => (error ? errorMapping(error) : null), [error]);
+
   return (
     <Flex
       flexDirection="row-reverse"
@@ -30,9 +40,9 @@ const AdminConfirmationSection = ({
           Mint {loading ? <InfiniteLoader size={12} color="background.main" /> : null}
         </Flex>
       </Button>
-      {error ? (
+      {formatedError ? (
         <Text variant="paragraph" color="error.c100">
-          {error.message}
+          {formatedError.message}
         </Text>
       ) : null}
       {hash ? (

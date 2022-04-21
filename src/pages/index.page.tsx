@@ -84,7 +84,7 @@ const Home = () => {
           {data.length ? (
             <Flex alignItems="flex-start" flexDirection="column" rowGap={4}>
               <Button variant="main" outline={false} disabled={!tokenId} onClick={handleSubmit}>
-                Burn {tokenId ? `#${tokenId}` : null}
+                Burn {tokenId ? `#${parseInt(tokenId, 16)}` : null}
               </Button>
               {txError && (
                 <Text variant="paragraph" color="error.c100">
