@@ -38,13 +38,7 @@ const VoucherCard = ({ currentToken, voucher, onClick }: VoucherCardType) => {
         overflow: "hidden",
       }}
     >
-      <Image
-        /* @ts-ignore next-line */
-        src={voucher?.media[0]?.raw || placeholderImage}
-        layout="fill"
-        quality={100}
-        alt=""
-      />
+      <Image src={placeholderImage} layout="fill" quality={100} alt="" />
     </Flex>
   );
 };
