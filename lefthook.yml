@@ -5,6 +5,6 @@ pre-push:
     linter:
       run: npm run lint
     prettier:
-      run: npm run lint
+      run: npm run prettier
     tscheck:
       run: npm run ts:check
