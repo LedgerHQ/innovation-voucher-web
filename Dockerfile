@@ -22,6 +22,8 @@ RUN npm run build
 
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
+LABEL maintainer="thomas.brillard@ledger.fr"
+LABEL org.opencontainers.image.source = "https://github.com/LedgerHQ/innovation-voucher-web"
 WORKDIR /app
 
 ENV NODE_ENV production
