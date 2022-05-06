@@ -21,7 +21,7 @@ const VoucherCard = ({ currentToken, voucher, onClick }: VoucherCardType) => {
   const tokenId = voucher.id.tokenId;
   const borderColor = currentToken === tokenId ? "hsla(0, 0%, 0%, 1)" : "transparent";
   const placeholderImage = useMemo(
-    () => `https://picsum.photos/id/${tokenId}/300/400.webp`,
+    () => `https://picsum.photos/id/${parseInt(tokenId, 16)}/300/400.webp`,
     [tokenId]
   );
 
