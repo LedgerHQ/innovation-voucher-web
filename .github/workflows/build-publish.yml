@@ -2,7 +2,7 @@ name: Docker Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -15,6 +15,18 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v2
+
+      # Create a temporary .env.production.local file and write all the environment variables
+      # needed to build from Github secrets
+      - uses: 1arp/create-a-file-action@0.2
+        with:
+          path: './'
+          file: '.env.production.local'
+          content: |
+            NEXT_PUBLIC_TYPEDDATADOMAIN_NAME=${{ secrets.NEXT_PUBLIC_TYPEDDATADOMAIN_NAME }}
+            NEXT_PUBLIC_TYPEDDATADOMAIN_VERSION=${{ secrets.NEXT_PUBLIC_TYPEDDATADOMAIN_VERSION }}
+            NEXT_PUBLIC_TYPEDDATADOMAIN_CHAINID=${{ secrets.NEXT_PUBLIC_TYPEDDATADOMAIN_CHAINID }}
+            NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT=${{ secrets.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT }}
 
       - name: Build and publish to GitHub Packages
         uses: docker/build-push-action@v1
