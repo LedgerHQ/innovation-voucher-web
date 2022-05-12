@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import contractData from "./data/contract.json";
 
 // @dev: The api key is the last element of the endpoint
-const alchemyApiKey = process.env.ALCHEMY_ENDPOINT.split("/").pop();
+const alchemyApiKey = process.env.ALCHEMY_API_KEY;
 
 // Create a provider designed to connect to Alchemy
 const provider = new ethers.providers.AlchemyProvider(
