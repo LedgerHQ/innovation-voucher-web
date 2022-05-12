@@ -2,7 +2,7 @@ import { Nft as NftType } from "@alch/alchemy-web3";
 
 // @dev: The request is filtered using our smart contract address
 const params = `withMetadata=true&contractAddresses[]=${process.env.NEXT_PUBLIC_TYPEDDATADOMAIN_VOUCHER_CONTRACT}`;
-const endpoint = `${process.env.ALCHEMY_ENDPOINT}/getNFTs/?${params}`;
+const endpoint = `${process.env.ALCHEMY_ENDPOINT}/${process.env.ALCHEMY_API_KEY}/getNFTs/?${params}`;
 
 type FetchNFTs = (owner: string, nfts?: Array<NftType>, pageKey?: string) => Promise<NftType[]>;
 type JSONResponse = { ownedNfts: Array<NftType>; pageKey: string; error: string };
