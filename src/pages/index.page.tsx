@@ -1,4 +1,5 @@
 import Head from "next/head";
+import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Text, Flex, Button } from "@ledgerhq/react-ui";
 import { useSignTypedData } from "wagmi";
@@ -6,7 +7,32 @@ import useAccount from "../utils/useAccount";
 import useVoucherFetch from "../utils/useVoucherFetch";
 import burnNFT from "../utils/api/burnNFT";
 import { domain, types } from "../utils/EIP712";
+import LegalMention from "../components/LegalMention";
 import HomeVoucherViewerSection, { BurnedList } from "./home/sections/HomeVoucherViewerSection";
+
+const Footer = styled(Flex).attrs({
+  as: "footer",
+  flexDirection: "row-reverse",
+  justifyContent: "space-between",
+  alignItems: "baseline",
+  columnGap: "0.5rem",
+  padding: "1rem 1.5rem",
+  backgroundColor: "background.main",
+  borderColor: "neutral.c90",
+})`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+    row-gap: 1rem;
+    column-gap: 0;
+    align-items: center;
+  }
+`;
 
 const Home = () => {
   const [tokenId, setTokenId] = useState<string>(null);
@@ -81,18 +107,21 @@ const Home = () => {
             <Text variant="paragraph">You must login to see your vouchers</Text>
           )}
 
-          {data.length ? (
-            <Flex alignItems="flex-start" flexDirection="column" rowGap={4}>
-              <Button variant="main" outline={false} disabled={!tokenId} onClick={handleSubmit}>
-                Burn {tokenId ? `#${parseInt(tokenId, 16)}` : null}
-              </Button>
-              {txError && (
-                <Text variant="paragraph" color="error.c100">
-                  {txError.message}
-                </Text>
-              )}
-            </Flex>
-          ) : null}
+          <Footer>
+            <LegalMention />
+            {data.length && isConnected ? (
+              <Flex alignItems="flex-start" flexDirection="column" rowGap={6}>
+                <Button variant="main" outline={false} disabled={!tokenId} onClick={handleSubmit}>
+                  Burn {tokenId ? `#${parseInt(tokenId, 16)}` : null}
+                </Button>
+                {txError && (
+                  <Text variant="paragraph" color="error.c100">
+                    {txError.message}
+                  </Text>
+                )}
+              </Flex>
+            ) : null}
+          </Footer>
         </Flex>
       </Flex>
     </>

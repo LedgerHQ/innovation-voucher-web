@@ -78,7 +78,7 @@ const HomeVoucherViewerSection = ({
   if (nfts.length === 0) return <EmptyView />;
 
   return (
-    <Flex columnGap="12" rowGap="10" flexWrap="wrap">
+    <Flex columnGap="12" rowGap="10" flexWrap="wrap" marginBottom="80px">
       {nfts
         .filter((voucher) => !burnedlist.find((tokenId) => tokenId === voucher.id.tokenId))
         .map((voucher) => (
