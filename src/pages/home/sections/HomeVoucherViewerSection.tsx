@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import Image from "next/image";
 import { Nft } from "@alch/alchemy-web3";
 import { Text, Flex, InfiniteLoader } from "@ledgerhq/react-ui";
@@ -19,26 +18,32 @@ const EmptyView = () => <Text variant="paragraph">It seems you do not have any v
 type VoucherCardType = { currentToken: string; voucher: Nft; onClick: (string) => void };
 const VoucherCard = ({ currentToken, voucher, onClick }: VoucherCardType) => {
   const tokenId = voucher.id.tokenId;
-  const borderColor = currentToken === tokenId ? "hsla(0, 0%, 0%, 1)" : "transparent";
-  const placeholderImage = useMemo(
-    () => `https://picsum.photos/id/${parseInt(tokenId, 16)}/300/400.webp`,
-    [tokenId]
-  );
+  const borderColor = currentToken === tokenId ? "hsla(0, 0%, 0%, 1)" : "hsla(0, 0%, 0%, 0.2)";
 
   return (
     <Flex
       key={tokenId}
       onClick={() => onClick(tokenId)}
+      justifyContent="center"
+      alignItems="center"
       style={{
         width: "300px",
-        height: "400px",
+        height: "300px",
         position: "relative",
         borderRadius: "3%",
         border: `4px solid ${borderColor}`,
         overflow: "hidden",
       }}
     >
-      <Image src={placeholderImage} layout="fill" quality={100} alt="" />
+      <Image
+        src="https://ledger.mypinata.cloud/ipfs/QmNwJvjVtqHDLJT81kSGzcV16JtYaBsY1wMs2tijXYcGY9"
+        placeholder="blur"
+        blurDataURL="data:text/plain;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII="
+        quality={100}
+        width={150}
+        height={150}
+        alt="ledger logo"
+      />
     </Flex>
   );
 };
