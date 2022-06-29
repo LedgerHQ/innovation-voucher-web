@@ -28,6 +28,7 @@ const checkSignature: (
         .status(401)
         .send({ ok: false, error: "owner doesn't match the signer", data: null });
   } catch (e) {
+    console.error(e);
     return res.status(500).json({ ok: false, error: "failed to verify data", data: null });
   }
 };
@@ -42,6 +43,7 @@ const sendBurnTx: (
   try {
     return api.sendBurnTx(signature, value.owner, value.tokenId);
   } catch (e) {
+    console.error(e);
     return res
       .status(500)
       .json({ ok: false, error: "failed to build the transaction", data: null });
@@ -65,6 +67,7 @@ const route = async (req: ExtendedNextApiRequest, res: NextApiResponse<BurnAPIRe
     // if everything is okay, return the transaction struct from Alchemy
     res.status(200).json({ ok: true, error: null, data: tx });
   } catch (e) {
+    console.error(e);
     return res.status(500).json({ ok: false, error: e.message, data: null });
   }
 };

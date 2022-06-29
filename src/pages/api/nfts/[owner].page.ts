@@ -9,6 +9,7 @@ const getAllNFTs = async ({ query: { owner }, method }, res) => {
     if (process.env.VERCEL_ENV === "production") res.setHeader("Cache-Control", "s-maxage=600");
     res.status(200).json({ data: nfts, error: null });
   } catch (e) {
+    console.error(e);
     res.status(500).json({ data: null, error: e.message });
   }
 };
