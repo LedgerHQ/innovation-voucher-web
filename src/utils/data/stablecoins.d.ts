@@ -1,8 +1,9 @@
 declare module "stablecoins.json" {
-  type network = {
+  export type token = { ticker: string; address: string; decimals: number };
+  export type network = {
     id: number;
     name: "polygon" | "mumbai" | "kovan" | "rinkeby";
-    tokens: Array<[string, string]>;
+    tokens: Array<token>;
   };
   type networks = Array<network>;
 

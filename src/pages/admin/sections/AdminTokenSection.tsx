@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { ethers } from "ethers";
-import { Text, Flex, Button, Input, SelectInput } from "@ledgerhq/react-ui";
+import { Text, Flex, Input, SelectInput } from "@ledgerhq/react-ui";
 import { useNetwork } from "wagmi";
 import networks from "../../../utils/data/stablecoins.json";
 
-type ShortcutButtonsType = { onClick: (string) => void; disabled: boolean; value: string };
+type Token = { ticker: string; address: string; decimals: number };
+type ShortcutButtonsType = { onClick: (string) => void; disabled: boolean; value: Token };
 const ShortcutButtons = ({ value, onClick, disabled }: ShortcutButtonsType) => {
   const [{ data: currentNetwork }] = useNetwork();
   const tokens = useMemo(() => {
@@ -13,11 +14,18 @@ const ShortcutButtons = ({ value, onClick, disabled }: ShortcutButtonsType) => {
     // find the tokens that match the current network and format them for the selector {label: string, value: string}
     const stablecoins = networks
       .find((network) => currentNetwork.chain?.id === network.id)
-      ?.tokens.map(([label, value]) => ({ value, label }));
+      ?.tokens.map(({ ticker, address, decimals }) => ({
+        value: { ticker, address, decimals },
+        label: ticker,
+      }));
 
     // get the native token that match the current network and format it for the selector {label: string, value: string}
     const nativeToken = {
-      value: ethers.constants.AddressZero,
+      value: {
+        ticker: currentNetwork.chain.nativeCurrency.symbol,
+        address: ethers.constants.AddressZero,
+        decimals: 18,
+      },
       label: currentNetwork.chain.nativeCurrency.symbol,
     };
 
@@ -46,73 +54,32 @@ const ShortcutButtons = ({ value, onClick, disabled }: ShortcutButtonsType) => {
       })}
       // As we allow arbitrary value in the input, we have to set the select
       // to null each time an address typed by the user doesn't match any options
-      value={tokens.find((token) => token.value === value) ?? null}
+      value={tokens.find((token) => token?.label === value?.ticker) ?? null}
     />
   );
 };
 
-type AdminTokenSectionType = { onSave: (string) => void; value: string; disabled?: boolean };
-const AdminTokenSection = ({ value, onSave, disabled = true }: AdminTokenSectionType) => {
-  const [erc20addr, setErc20Addr] = useState("");
-  const [error, setError] = useState("");
-
-  // Reset the error when the input is clear
-  useEffect(() => {
-    // If the value of the input change, the value isn't a valid address
-    // and there is a value saved in the parent then we reset the value saved in the parent
-    if (value && !ethers.utils.isAddress(erc20addr)) onSave("");
-
-    // If the last submission triggered an error, we reset it as soon as the input value change
-    if (error) setError("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [erc20addr]);
-
-  const handleSave = (address: string) => {
-    if (!ethers.utils.isAddress(address)) return setError("Incorret address!");
-
-    // Call the callback function using the validated recipient address
-    onSave(address);
-    setError("");
-  };
-
-  const handleTokenClick = (address: string) => {
-    // Save the value of the stablecoin in the input
-    setErc20Addr(address);
-    // Call the function to save the value in the parent state.
-    // This is the function triggered by the "save" button
-    handleSave(address);
-  };
-
-  return (
-    <Flex flexDirection="column" as="section" rowGap={5} style={{ opacity: disabled ? 0.3 : 1 }}>
-      <Flex flexDirection="column" as="header" rowGap={2}>
-        <Text variant="h4">
-          <span style={{ opacity: 0.6 }}>B/</span> Select the token
-        </Text>
-        <Text variant="subtitle">
-          Either enter the address of the token you want, or use the selector to choose a
-          pre-registered token
-        </Text>
-      </Flex>
-      <Input
-        type="text"
-        placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
-        value={erc20addr}
-        onChange={setErc20Addr}
-        disabled={disabled}
-        renderLeft={
-          <ShortcutButtons value={value} onClick={handleTokenClick} disabled={disabled} />
-        }
-        renderRight={
-          <Button disabled={!erc20addr} onClick={() => handleSave(erc20addr)}>
-            Save
-          </Button>
-        }
-        error={error}
-        clearable
-      />
-    </Flex>
-  );
+type AdminTokenSectionType = {
+  onSave: (string) => void;
+  value: Token | null;
+  disabled?: boolean;
 };
+const AdminTokenSection = ({ value: token, onSave, disabled = true }: AdminTokenSectionType) => (
+  <Flex flexDirection="column" as="section" rowGap={5} style={{ opacity: disabled ? 0.3 : 1 }}>
+    <Flex flexDirection="column" as="header" rowGap={2}>
+      <Text variant="h4">
+        <span style={{ opacity: 0.6 }}>B/</span> Select the token
+      </Text>
+      <Text variant="subtitle">Use the selector to choose a pre-registered token</Text>
+    </Flex>
+    <Input
+      type="text"
+      placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+      value={token?.address ?? ""}
+      disabled={disabled}
+      renderLeft={<ShortcutButtons value={token} onClick={onSave} disabled={disabled} />}
+    />
+  </Flex>
+);
 
 export default AdminTokenSection;
