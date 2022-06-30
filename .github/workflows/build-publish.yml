@@ -35,6 +35,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          tags: v1.0.1
+          tags: v1.0.2
           tag_with_ref: true
           push: ${{ startsWith(github.ref, 'refs') }}
