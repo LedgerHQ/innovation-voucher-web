@@ -44,7 +44,7 @@ const Terms = () => (
         personal data protection authority of your country.
       </Text>
     </Flex>
-    <NextLink href="/">
+    <NextLink passHref href="/">
       <Text
         variant="small"
         style={{ cursor: "pointer", textDecoration: "underline" }}

@@ -10,26 +10,28 @@ import {
   AdminConfirmationSection,
 } from "./sections";
 
+type Token = { ticker: string; address: string; decimals: number };
 function Admin() {
   const [, , isConnected] = useAccount();
   const [to, setTo] = useState([]);
   const [amount, setAmount] = useState(null);
-  const [erc20Addr, setErc20Addr] = useState(null);
+  const [erc20, setERC20] = useState<Token | null>(null);
+
   const [{ loading, error, data }, mint] = useVoucherMint();
 
   useEffect(() => {
     // if the transaction is propagated to the network, and the state isn't already empty, we clear it
-    if (data?.hash && to && amount && erc20Addr) {
+    if (data?.hash && to && amount && erc20?.address) {
       setTo([]);
       setAmount(null);
-      setErc20Addr(null);
+      setERC20(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const handleSubmit = async () => {
     try {
-      await mint(to, amount, erc20Addr);
+      await mint(to, amount, erc20.address);
     } catch (e) {
       throw e;
     }
@@ -42,6 +44,12 @@ function Admin() {
   // Remove the selected address from the list
   const handleToRemove = (recipient) =>
     setTo((previousTo) => previousTo.filter((addr) => addr !== recipient));
+
+  const handleERC20Save = (erc20: Token) => {
+    setERC20(erc20);
+    // reset amount input on ERC20 save
+    setAmount(null);
+  };
 
   return (
     <>
@@ -59,11 +67,16 @@ function Admin() {
 
         <Flex flexDirection="column" as="main" rowGap={14} style={{ maxWidth: "40rem" }}>
           <AdminRecipientSection recipients={to} onSave={handleToSave} onRemove={handleToRemove} />
-          <AdminTokenSection value={erc20Addr} disabled={!to.length} onSave={setErc20Addr} />
-          <AdminAmountSection value={amount} disabled={!erc20Addr} onSave={setAmount} />
+          <AdminTokenSection value={erc20} disabled={!to.length} onSave={handleERC20Save} />
+          <AdminAmountSection
+            value={amount}
+            decimals={erc20?.decimals}
+            disabled={!erc20?.address}
+            onSave={setAmount}
+          />
           <AdminConfirmationSection
             handleSubmit={handleSubmit}
-            disabled={!(to.length && amount && erc20Addr && isConnected)}
+            disabled={!(to.length && amount && erc20?.address && isConnected)}
             loading={loading}
             error={error}
             hash={data?.hash}

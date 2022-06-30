@@ -2,10 +2,21 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { Text, Flex, Input } from "@ledgerhq/react-ui";
 
-type AdminAmountSectionType = { value: string; onSave: (string) => void; disabled: boolean };
-const AdminAmountSection = ({ value, onSave, disabled }: AdminAmountSectionType) => {
+type AdminAmountSectionType = {
+  value: string;
+  decimals: number;
+  onSave: (string) => void;
+  disabled: boolean;
+};
+const AdminAmountSection = ({ value, decimals, onSave, disabled }: AdminAmountSectionType) => {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    // Reset the input everytime the user update the token
+    if (!value && amount.length > 0) setAmount("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   useEffect(() => {
     // If there is no value in the input because user cleared the input
@@ -15,7 +26,7 @@ const AdminAmountSection = ({ value, onSave, disabled }: AdminAmountSectionType)
 
     try {
       // parseEther() triggers a error if the amount passed to the function is incorrect
-      const parsedAmount = ethers.utils.parseEther(amount).toString();
+      const parsedAmount = ethers.utils.parseUnits(amount, decimals).toString();
       onSave(parsedAmount);
 
       // reset error if the formattedValue is correct
